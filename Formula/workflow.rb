@@ -5,7 +5,7 @@
 class Workflow < Formula
   desc "Workflow CLI tool for PR management, Jira integration, and log processing"
   homepage "https://github.com/zevwings/workflow.rs"
-  version "master-v0.0.1"
+  version "0.0.1"
   license "MIT"
 
   # 方式一：从源码构建（推荐用于开发阶段）
@@ -18,12 +18,12 @@ class Workflow < Formula
 
     # 如果使用 GitHub Releases，可以这样配置：
     # if Hardware::CPU.intel?
-    #   url "https://github.com/zevwings/workflow.rs/releases/download/vmaster-v0.0.1/workflow-master-v0.0.1-x86_64-apple-darwin.tar.gz"
-    #   sha256 "53f0f764f258ccf3f211353ad430c99602fe5421e8e480fa7e4ab9e7944f4353"
+    #   url "https://github.com/zevwings/workflow.rs/releases/download/v0.0.1/workflow-0.0.1-x86_64-apple-darwin.tar.gz"
+    #   sha256 "dfbb1bde2115321f1a178454fd066e99b9e5489317a3e7677a7208f519293d2e"
     # end
     # if Hardware::CPU.arm?
-    #   url "https://github.com/zevwings/workflow.rs/releases/download/vmaster-v0.0.1/workflow-master-v0.0.1-aarch64-apple-darwin.tar.gz"
-    #   sha256 "a17883b5a83509539c595ceec9a3441b51b77a927e3dc5dec7e5912de6fda322"
+    #   url "https://github.com/zevwings/workflow.rs/releases/download/v0.0.1/workflow-0.0.1-aarch64-apple-darwin.tar.gz"
+    #   sha256 "ed825955eebcd9b5dfd8468956697a972f6781da18a5bae2c33ef519d48aecc8"
     # end
   end
 
