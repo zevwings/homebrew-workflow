@@ -5,7 +5,7 @@
 class Workflow < Formula
   desc "Workflow CLI tool for PR management, Jira integration, and log processing"
   homepage "https://github.com/zevwings/workflow.rs"
-  version "0.0.1"
+  version "0.0.2"
   license "MIT"
 
   # 从源码构建（使用 git tag）
@@ -13,7 +13,7 @@ class Workflow < Formula
 
   on_macos do
     # 使用 git 仓库和 tag（会自动更新为最新的 tag）
-    url "https://github.com/zevwings/workflow.rs.git", tag: "v0.0.1"
+    url "https://github.com/zevwings/workflow.rs.git", tag: "v0.0.2"
   end
 
   def install
@@ -69,7 +69,8 @@ class Workflow < Formula
 
     # 自动安装 shell completion
     # 使用已安装的 install 二进制文件来安装 completions
-    install_binary = bin/"install"
+    # 在 post_install 中，需要使用 prefix/"bin" 而不是 bin
+    install_binary = prefix/"bin"/"install"
 
     if install_binary.exist? && install_binary.executable?
       # 确保环境变量正确设置
@@ -91,7 +92,7 @@ class Workflow < Formula
         exit_code = $?.exitstatus || 1
         opoo "Failed to install shell completions (exit code: #{exit_code})"
         opoo "You can manually install completions by running:"
-        opoo "  #{bin}/install"
+        opoo "  #{install_binary}"
         opoo "Or use the workflow command:"
         opoo "  workflow install"
       end
