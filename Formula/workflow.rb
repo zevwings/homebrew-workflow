@@ -5,45 +5,47 @@
 class Workflow < Formula
   desc "Workflow CLI tool for PR management, Jira integration, and log processing"
   homepage "https://github.com/zevwings/workflow.rs"
-  version "0.0.5"
+  version "master-v0.1.0"
   license "MIT"
 
-  # 方式一：从源码构建（推荐用于开发阶段）
-  # 如果有 GitHub Releases，可以使用方式二
+  # 从源码构建（使用 git tag）
   depends_on "rust" => :build
 
   on_macos do
-    # 从源码构建
-    url "https://github.com/zevwings/workflow.rs.git", tag: "v0.0.5"
-
-    # 如果使用 GitHub Releases，可以这样配置：
-    # if Hardware::CPU.intel?
-    #   url "https://github.com/zevwings/workflow.rs/releases/download/v0.0.1/workflow-0.0.1-x86_64-apple-darwin.tar.gz"
-    #   sha256 "dfbb1bde2115321f1a178454fd066e99b9e5489317a3e7677a7208f519293d2e"
-    # end
-    # if Hardware::CPU.arm?
-    #   url "https://github.com/zevwings/workflow.rs/releases/download/v0.0.1/workflow-0.0.1-aarch64-apple-darwin.tar.gz"
-    #   sha256 "ed825955eebcd9b5dfd8468956697a972f6781da18a5bae2c33ef519d48aecc8"
-    # end
+    # 使用 git 仓库和 tag（会自动更新为最新的 tag）
+    url "https://github.com/zevwings/workflow.rs.git", tag: "vmaster-v0.1.0"
   end
 
   def install
+    # 设置环境变量以优化编译过程
+    ENV["CARGO_TERM_COLOR"] = "always"
+    ENV["CARGO_BUILD_JOBS"] = ENV.fetch("HOMEBREW_MAKE_JOBS", "4").to_s
+
+    # 显示编译进度
+    ohai "Building workflow CLI (this may take a few minutes)..."
+    ohai "Downloading and compiling dependencies..."
+
     # 构建所有二进制文件（包括 install，虽然它不会被安装到系统）
-    system "cargo", "build", "--release", "--bin", "workflow", "--bin", "pr", "--bin", "qk", "--bin", "install"
+    # 使用 --verbose 显示更多输出，让用户知道进度
+    system "cargo", "build", "--release", "--verbose", "--bin", "workflow", "--bin", "pr", "--bin", "qk", "--bin", "install"
+
+    ohai "Build completed! Installing binaries..."
+
     # 只安装用户可用的命令到系统
     bin.install "target/release/workflow"
     bin.install "target/release/pr"
     bin.install "target/release/qk"
 
-    # 安装 install 二进制文件，用于 post_install 中的 completion 安装
+    # 临时安装 install 二进制文件，用于 post_install 中的 completion 安装
+    # 安装后会被保留，用户可以使用它来安装 completions
     bin.install "target/release/install"
-    # 注意：install 二进制不安装到系统，它仅用于 shell completion 安装（Makefile 使用）
   end
 
   def post_install
     # 创建符号链接到 /usr/local/bin（如果目录存在且可写）
     local_bin = "/usr/local/bin"
     homebrew_prefix = ENV.fetch("HOMEBREW_PREFIX", "/opt/homebrew")
+
     if Dir.exist?(local_bin) && File.writable?(local_bin)
       %w[workflow pr qk].each do |cmd|
         source = "#{homebrew_prefix}/bin/#{cmd}"
@@ -64,19 +66,24 @@ class Workflow < Formula
       opoo "  sudo ln -sf #{homebrew_prefix}/bin/pr /usr/local/bin/pr"
       opoo "  sudo ln -sf #{homebrew_prefix}/bin/qk /usr/local/bin/qk"
     end
-  end
 
     # 自动安装 shell completion
     # 使用已安装的 install 二进制文件来安装 completions
     install_binary = bin/"install"
 
     if install_binary.exist? && install_binary.executable?
+      # 确保环境变量正确设置
       home_dir = ENV.fetch("HOME", Dir.home)
       shell_env = ENV.fetch("SHELL", "/bin/zsh")
+
       ohai "Installing shell completions..."
       ohai "Using HOME: #{home_dir}"
       ohai "Using SHELL: #{shell_env}"
+
+      # 运行 install 命令来安装 completions
+      # 使用 system 命令，但捕获错误并提供更好的反馈
       result = system(install_binary.to_s)
+
       if result
         ohai "Shell completions installed successfully"
         ohai "To activate completions, run: source ~/.zshrc  # or ~/.bashrc"
@@ -94,6 +101,7 @@ class Workflow < Formula
       opoo "You can manually install completions later by running:"
       opoo "  workflow install"
     end
+  end
 
   test do
     system "#{bin}/workflow", "--help"
