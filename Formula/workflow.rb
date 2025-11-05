@@ -37,6 +37,32 @@ class Workflow < Formula
     # 注意：install 二进制不安装到系统，它仅用于 shell completion 安装（Makefile 使用）
   end
 
+  def post_install
+    # 创建符号链接到 /usr/local/bin（如果目录存在且可写）
+    local_bin = "/usr/local/bin"
+    homebrew_prefix = ENV.fetch("HOMEBREW_PREFIX", "/opt/homebrew")
+    if Dir.exist?(local_bin) && File.writable?(local_bin)
+      %w[workflow pr qk].each do |cmd|
+        source = "#{homebrew_prefix}/bin/#{cmd}"
+        target = "#{local_bin}/#{cmd}"
+        if File.exist?(source)
+          begin
+            FileUtils.ln_sf(source, target)
+            ohai "Created symlink: #{target} -> #{source}"
+          rescue => e
+            opoo "Failed to create symlink #{target}: #{e.message}"
+            opoo "You may need to run manually: sudo ln -sf #{source} #{target}"
+          end
+        end
+      end
+    else
+      opoo "/usr/local/bin is not writable. Creating symlinks requires sudo:"
+      opoo "  sudo ln -sf #{homebrew_prefix}/bin/workflow /usr/local/bin/workflow"
+      opoo "  sudo ln -sf #{homebrew_prefix}/bin/pr /usr/local/bin/pr"
+      opoo "  sudo ln -sf #{homebrew_prefix}/bin/qk /usr/local/bin/qk"
+    end
+  end
+
   test do
     system "#{bin}/workflow", "--help"
     system "#{bin}/pr", "--help"
