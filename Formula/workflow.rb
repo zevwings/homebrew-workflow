@@ -5,7 +5,7 @@
 class Workflow < Formula
   desc "Workflow CLI tool for PR management, Jira integration, and log processing"
   homepage "https://github.com/zevwings/workflow.rs"
-  version "0.0.1"
+  version "master-v0.0.2"
   license "MIT"
 
   # 方式一：从源码构建（推荐用于开发阶段）
