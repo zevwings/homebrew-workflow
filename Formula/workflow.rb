@@ -5,7 +5,7 @@
 class Workflow < Formula
   desc "Workflow CLI tool for PR management, Jira integration, and log processing"
   homepage "https://github.com/zevwings/workflow.rs"
-  version "0.0.4"
+  version "0.0.5"
   license "MIT"
 
   # 方式一：从源码构建（推荐用于开发阶段）
@@ -14,7 +14,7 @@ class Workflow < Formula
 
   on_macos do
     # 从源码构建
-    url "https://github.com/zevwings/workflow.rs.git", tag: "v0.0.4"
+    url "https://github.com/zevwings/workflow.rs.git", tag: "v0.0.5"
 
     # 如果使用 GitHub Releases，可以这样配置：
     # if Hardware::CPU.intel?
@@ -34,6 +34,9 @@ class Workflow < Formula
     bin.install "target/release/workflow"
     bin.install "target/release/pr"
     bin.install "target/release/qk"
+
+    # 安装 install 二进制文件，用于 post_install 中的 completion 安装
+    bin.install "target/release/install"
     # 注意：install 二进制不安装到系统，它仅用于 shell completion 安装（Makefile 使用）
   end
 
@@ -62,6 +65,35 @@ class Workflow < Formula
       opoo "  sudo ln -sf #{homebrew_prefix}/bin/qk /usr/local/bin/qk"
     end
   end
+
+    # 自动安装 shell completion
+    # 使用已安装的 install 二进制文件来安装 completions
+    install_binary = bin/"install"
+
+    if install_binary.exist? && install_binary.executable?
+      home_dir = ENV.fetch("HOME", Dir.home)
+      shell_env = ENV.fetch("SHELL", "/bin/zsh")
+      ohai "Installing shell completions..."
+      ohai "Using HOME: #{home_dir}"
+      ohai "Using SHELL: #{shell_env}"
+      result = system(install_binary.to_s)
+      if result
+        ohai "Shell completions installed successfully"
+        ohai "To activate completions, run: source ~/.zshrc  # or ~/.bashrc"
+      else
+        exit_code = $?.exitstatus || 1
+        opoo "Failed to install shell completions (exit code: #{exit_code})"
+        opoo "You can manually install completions by running:"
+        opoo "  #{bin}/install"
+        opoo "Or use the workflow command:"
+        opoo "  workflow install"
+      end
+    else
+      opoo "Install binary not found at #{install_binary}"
+      opoo "Skipping automatic completion installation"
+      opoo "You can manually install completions later by running:"
+      opoo "  workflow install"
+    end
 
   test do
     system "#{bin}/workflow", "--help"
