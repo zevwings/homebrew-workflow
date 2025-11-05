@@ -5,7 +5,7 @@
 class Workflow < Formula
   desc "Workflow CLI tool for PR management, Jira integration, and log processing"
   homepage "https://github.com/zevwings/workflow.rs"
-  version "0.0.3"
+  version "0.0.4"
   license "MIT"
 
   # 方式一：从源码构建（推荐用于开发阶段）
@@ -14,7 +14,7 @@ class Workflow < Formula
 
   on_macos do
     # 从源码构建
-    url "https://github.com/zevwings/workflow.rs.git", tag: "v0.0.3"
+    url "https://github.com/zevwings/workflow.rs.git", tag: "v0.0.4"
 
     # 如果使用 GitHub Releases，可以这样配置：
     # if Hardware::CPU.intel?
