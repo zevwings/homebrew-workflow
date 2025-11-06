@@ -5,7 +5,7 @@
 class Workflow < Formula
   desc "Workflow CLI tool for PR management, Jira integration, and log processing"
   homepage "https://github.com/zevwings/workflow.rs"
-  version "0.0.1-alpha.003"
+  version "0.0.1-alpha.005"
   license "MIT"
 
   # 从源码构建（使用 git tag）
@@ -13,7 +13,7 @@ class Workflow < Formula
 
   on_macos do
     # 使用 git 仓库和 tag（会自动更新为最新的 tag）
-    url "https://github.com/zevwings/workflow.rs.git", tag: "v0.0.1-alpha.003"
+    url "https://github.com/zevwings/workflow.rs.git", tag: "v0.0.1-alpha.005"
   end
 
   def install
