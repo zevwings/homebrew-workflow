@@ -9,7 +9,7 @@
 class Workflow < Formula
   desc "Workflow CLI tool for PR management, Jira integration, and log processing"
   homepage "https://github.com/zevwings/workflow.rs"
-  version "1.6.6"
+  version "1.6.7"
   license "MIT"
 
   # 从源码构建
@@ -18,8 +18,8 @@ class Workflow < Formula
   on_macos do
     # 根据安装类型选择 tag 或 branch
     # 构建脚本会根据 tag 的值来替换下面的占位符：
-    # - 如果 tag == "tag"，则替换为: url "https://github.com/zevwings/workflow.rs/releases/download/v1.6.6/workflow-1.6.6-x86_64-apple-darwin.tar.gz"
-    # - 如果 tag == "branch"，则替换为: url "https://github.com/zevwings/workflow.rs/releases/download/v1.6.6/workflow-1.6.6-x86_64-apple-darwin.tar.gz"
+    # - 如果 tag == "tag"，则替换为: url "https://github.com/zevwings/workflow.rs/releases/download/v1.6.7/workflow-1.6.7-x86_64-apple-darwin.tar.gz"
+    # - 如果 tag == "branch"，则替换为: url "https://github.com/zevwings/workflow.rs/releases/download/v1.6.7/workflow-1.6.7-x86_64-apple-darwin.tar.gz"
     #
     # 在 GitHub Actions 中，可以通过以下方式自动检测：
     #   if [[ "${{ github.ref }}" == refs/tags/* ]]; then
@@ -29,11 +29,11 @@ class Workflow < Formula
     #     INSTALL_TYPE="branch"
     #     VERSION_REF="${GITHUB_REF#refs/heads/}"
     #   fi
-    url "https://github.com/zevwings/workflow.rs/releases/download/v1.6.6/workflow-1.6.6-x86_64-apple-darwin.tar.gz"
+    url "https://github.com/zevwings/workflow.rs/releases/download/v1.6.7/workflow-1.6.7-x86_64-apple-darwin.tar.gz"
     # 示例（构建脚本会生成以下之一）:
-    #   url "https://github.com/zevwings/workflow.rs/releases/download/v1.6.6/workflow-1.6.6-x86_64-apple-darwin.tar.gz"
+    #   url "https://github.com/zevwings/workflow.rs/releases/download/v1.6.7/workflow-1.6.7-x86_64-apple-darwin.tar.gz"
     #   或
-    #   url "https://github.com/zevwings/workflow.rs/releases/download/v1.6.6/workflow-1.6.6-x86_64-apple-darwin.tar.gz"
+    #   url "https://github.com/zevwings/workflow.rs/releases/download/v1.6.7/workflow-1.6.7-x86_64-apple-darwin.tar.gz"
   end
 
   def install
